@@ -115,7 +115,24 @@ body {
   width: 100%;
   height: 100%;
   font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Apple Color Emoji', 'Noto Sans Symbols', sans-serif;
+  font-size: 44px;
+  color: #1a1a1a;
   line-height: 1;
+}
+
+/* 新摸到的牌（3秒后自动消失） */
+.tile.newly-drawn {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    0 0 8px #00e5ff, 0 0 16px rgba(0,229,255,0.4);
+  border-color: #00e5ff;
+  animation: glow-fade 2.5s ease-out forwards;
+}
+
+@keyframes glow-fade {
+  0%   { box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 0 12px #00e5ff, 0 0 24px rgba(0,229,255,0.6); border-color: #00e5ff; }
+  60%  { box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 0 6px rgba(0,229,255,0.3), 0 0 12px rgba(0,229,255,0.2); border-color: rgba(0,229,255,0.5); }
+  100% { box-shadow: none; border-color: #c4b598; }
 }
 
 /* 财神标记 */
@@ -164,7 +181,7 @@ body {
   height: 48px;
 }
 
-.tile.meld-tile .tile-face { font-size: 28px; }
+.tile.meld-tile .tile-face { font-size: 38px; }
 
 /* 弃牌 */
 .tile.discard-tile {
@@ -173,7 +190,7 @@ body {
   cursor: default;
 }
 
-.tile.discard-tile .tile-face { font-size: 24px; }
+.tile.discard-tile .tile-face { font-size: 28px; }
 
 .tile.discard-tile:hover {
   transform: none;
@@ -211,12 +228,96 @@ body {
 .discard-area {
   display: flex;
   flex-wrap: wrap;
-  max-width: 200px;
   gap: 1px;
   padding: 4px;
   background: rgba(0,0,0,0.1);
   border-radius: 4px;
-  min-height: 50px;
+  min-height: 42px;
+}
+
+/* 牌桌中央弃牌区容器 */
+.center-discard {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto auto auto;
+  gap: 2px;
+  padding: 6px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 8px;
+}
+
+/* 上家弃牌（上方居中） */
+.discard-top {
+  grid-column: 1 / 4;
+  grid-row: 1;
+  justify-self: center;
+  max-width: calc(6 * 30px + 5 * 1px + 8px);
+}
+
+/* 中央正方形空隙 */
+.center-gap {
+  grid-column: 2;
+  grid-row: 2;
+  width: 80px;
+  height: 80px;
+}
+
+/* 左家弃牌（左侧） */
+.discard-left {
+  grid-column: 1;
+  grid-row: 2;
+  max-width: calc(6 * 30px + 5 * 1px + 8px);
+}
+
+/* 右家弃牌（右侧） */
+.discard-right {
+  grid-column: 3;
+  grid-row: 2;
+  max-width: calc(6 * 30px + 5 * 1px + 8px);
+}
+
+/* 自己弃牌（下方居中） */
+.discard-bottom {
+  grid-column: 1 / 4;
+  grid-row: 3;
+  justify-self: center;
+  max-width: calc(6 * 30px + 5 * 1px + 8px);
+}
+
+/* 左家弃牌：纵向排列，每列6张 */
+.discard-left {
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 0;
+  max-width: none !important;
+  max-height: calc(6 * 34px + 8px);
+  align-content: flex-start;
+  overflow: visible;
+  padding: 2px;
+}
+
+/* 右家弃牌：纵向排列，每列6张 */
+.discard-right {
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 0;
+  max-width: none !important;
+  max-height: calc(6 * 34px + 8px);
+  align-content: flex-start;
+  overflow: visible;
+  padding: 2px;
+}
+
+/* 左家每张牌旋转朝左 */
+.discard-left .tile.discard-tile {
+  transform: rotate(90deg);
+  margin: -12px 5px;
+}
+
+/* 右家每张牌旋转朝右 */
+.discard-right .tile.discard-tile {
+  transform: rotate(-90deg);
+  margin: -12px 5px;
 }
 
 /* ==================== 操作按钮 ==================== */

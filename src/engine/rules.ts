@@ -36,9 +36,9 @@ export function getAvailableActions(
     actions.push({ type: 'peng', tiles: [discard], fromPlayer });
   }
 
-  // 吃（只能吃上家的牌）
-  const prevPlayer = (state.currentPlayer + 3) % 4;
-  if (playerIndex === prevPlayer) {
+  // 吃（只能吃上家的牌，即出牌人的下家）
+  const nextPlayer = (state.currentPlayer + 1) % 4;
+  if (playerIndex === nextPlayer) {
     const chiOptions = isValidChi(hand, discard);
     for (const chiTiles of chiOptions) {
       actions.push({ type: 'chi', tiles: [...chiTiles, discard], fromPlayer });

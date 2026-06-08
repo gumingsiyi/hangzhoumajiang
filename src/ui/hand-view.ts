@@ -11,6 +11,7 @@ export function renderHand(
     faceDown?: boolean;
     clickable?: boolean;
     selectedTileId?: number;
+    newlyDrawnTileId?: number;
     onTileClick?: (tile: Tile) => void;
   } = {}
 ): void {
@@ -37,11 +38,13 @@ export function renderHand(
 
   for (const tile of player.hand) {
     const isSelected = options.selectedTileId === tile.id;
+    const isNewlyDrawn = options.newlyDrawnTileId === tile.id;
     handArea.appendChild(
       createTileElement(tile, {
         faceDown: options.faceDown,
         clickable: options.clickable,
         selected: isSelected,
+        newlyDrawn: isNewlyDrawn,
         onClick: options.onTileClick,
       })
     );

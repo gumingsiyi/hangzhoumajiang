@@ -17,6 +17,8 @@ export class App {
   private gameState: SanitizedGameState | null = null;
   private pendingActions: Action[] = [];
   private selectedTileId: number | null = null;
+  private lastHandTileIds: Set<number> = new Set();
+  private newlyDrawnTileId: number | null = null;
 
   // DOM 元素
   private elPlayerHand!: HTMLElement;
@@ -82,20 +84,27 @@ export class App {
 
     table.appendChild(playerArea);
 
-    // 弃牌区（4 个）
+    // 弃牌区（牌桌中央，4个区域按方位排列）
     this.elDiscards = [];
+    const centerDiscard = document.createElement('div');
+    centerDiscard.className = 'center-discard';
+    centerDiscard.style.position = 'absolute';
+    centerDiscard.style.top = '50%';
+    centerDiscard.style.left = '50%';
+    centerDiscard.style.transform = 'translate(-50%, -50%)';
+    table.appendChild(centerDiscard);
+
+    // 中央空隙
+    const centerGap = document.createElement('div');
+    centerGap.className = 'center-gap';
+    centerDiscard.appendChild(centerGap);
+
+    // 布局：top 在上，left 在左，right 在右，bottom 在下
+    const discardPositions = ['discard-top', 'discard-left', 'discard-right', 'discard-bottom'];
     for (let i = 0; i < 4; i++) {
       const discardArea = document.createElement('div');
-      discardArea.className = 'discard-area';
-      discardArea.style.position = 'absolute';
-      const positions = [
-        { bottom: '120px', left: '50%', transform: 'translateX(-50%)' },
-        { top: '80px', left: '50%', transform: 'translateX(-50%)' },
-        { top: '50%', left: '80px', transform: 'translateY(-50%)' },
-        { top: '50%', right: '80px', transform: 'translateY(-50%)' },
-      ];
-      Object.assign(discardArea.style, positions[i]);
-      table.appendChild(discardArea);
+      discardArea.className = `discard-area ${discardPositions[i]}`;
+      centerDiscard.appendChild(discardArea);
       this.elDiscards.push(discardArea);
     }
 
@@ -177,11 +186,24 @@ export class App {
         addMessage(this.elMessageLog, `你加入了游戏，座位：${this.mySeat}`);
         break;
 
-      case 'state_update':
+      case 'state_update': {
+        const prevIds = this.lastHandTileIds;
+        const newHand = msg.state.myHand ?? [];
+        this.newlyDrawnTileId = null;
+        if (prevIds.size > 0) {
+          for (const t of newHand) {
+            if (!prevIds.has(t.id)) {
+              this.newlyDrawnTileId = t.id;
+              break;
+            }
+          }
+        }
+        this.lastHandTileIds = new Set(newHand.map(t => t.id));
         this.gameState = msg.state;
         this.pendingActions = [];
         this.render();
         break;
+      }
 
       case 'action_required':
         this.pendingActions = msg.actions;
@@ -217,6 +239,7 @@ export class App {
 
     if (actions.length === 1 && actions[0].type === 'discard') {
       // 只需要出牌，不需要按钮，点击手牌即可
+      this.pendingActions = [];  // 清空 pending，允许点击手牌
       this.elActionBar.innerHTML = '';
       return;
     }
@@ -260,6 +283,7 @@ export class App {
       }, {
         clickable: true,
         selectedTileId: this.selectedTileId ?? undefined,
+        newlyDrawnTileId: this.newlyDrawnTileId ?? undefined,
         onTileClick: (tile) => this.onTileClick(tile),
       });
     }
@@ -280,10 +304,15 @@ export class App {
       }
     }
 
-    // 对手手牌（背面）
-    const oppIndices = [0, 1, 2, 3].filter(i => i !== this.mySeat);
+    // 对手手牌（背面）— DOM 位置: [top, left, right]
+    // 相对位置: top=对家(mySeat+2), left=上家(mySeat+3), right=下家(mySeat+1)
+    const relativeOpp = [
+      (this.mySeat + 2) % 4,  // 对面：对家
+      (this.mySeat + 3) % 4,  // 左边：上家
+      (this.mySeat + 1) % 4,  // 右边：下家
+    ];
     for (let i = 0; i < 3; i++) {
-      const playerIdx = oppIndices[i];
+      const playerIdx = relativeOpp[i];
       const el = this.elOppHands[i];
       el.innerHTML = '';
       const oppPlayer = state.players[playerIdx];
@@ -296,11 +325,17 @@ export class App {
       }
     }
 
-    // 弃牌区
+    // 弃牌区 — 牌桌中央，按相对位置: [top=对家, left=上家, right=下家, bottom=自己]
+    const relativeDiscard = [
+      (this.mySeat + 2) % 4,  // top: 对家
+      (this.mySeat + 3) % 4,  // left: 上家
+      (this.mySeat + 1) % 4,  // right: 下家
+      this.mySeat,             // bottom: 自己
+    ];
     for (let i = 0; i < 4; i++) {
       renderDiscards(
         this.elDiscards[i],
-        state.players[i]?.discards ?? [],
+        state.players[relativeDiscard[i]]?.discards ?? [],
         state.lastDiscard?.id
       );
     }
@@ -310,20 +345,29 @@ export class App {
   }
 
   private updatePlayerLabels(): void {
-    const seatNames = ['你', '玩家1', '玩家2', '玩家3'];
+    if (this.mySeat === -1) return;
+    // 标签索引: 0=top(对家), 1=left(上家), 2=right(下家), 3=bottom(自己)
+    const relativeSeats = [
+      (this.mySeat + 2) % 4,  // top: 对家
+      (this.mySeat + 3) % 4,  // left: 上家
+      (this.mySeat + 1) % 4,  // right: 下家
+      this.mySeat,             // bottom: 自己
+    ];
+    const relativeNames = ['对家', '上家', '下家', '你'];
     for (let i = 0; i < 4; i++) {
       const label = this.elPlayerLabels[i];
       if (!label) continue;
 
-      const type = this.seatTypes[i];
-      const isMe = i === this.mySeat;
+      const seat = relativeSeats[i];
+      const type = this.seatTypes[seat];
+      const isMe = seat === this.mySeat;
 
       if (isMe) {
-        label.textContent = `${seatNames[i]} (你)`;
+        label.textContent = `你 (座位${seat})`;
       } else if (type === 'human') {
-        label.textContent = `${seatNames[i]} (玩家)`;
+        label.textContent = `${relativeNames[i]} (座位${seat})`;
       } else {
-        label.textContent = `${seatNames[i]} (AI)`;
+        label.textContent = `${relativeNames[i]} (AI)`;
       }
     }
   }

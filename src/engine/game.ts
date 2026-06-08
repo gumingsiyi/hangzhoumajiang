@@ -150,6 +150,7 @@ export class Game {
     const priority = huAction || gangAction || pengAction || chiAction;
 
     if (priority) {
+      this.state.currentPlayer = priority.player;
       this.state.pendingActions = priority.actions;
       this.callbacks.onActionRequired(priority.player, priority.actions);
     } else {
