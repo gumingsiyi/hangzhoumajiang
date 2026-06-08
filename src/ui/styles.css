@@ -76,79 +76,201 @@ body {
   justify-content: center;
   width: 40px;
   height: 56px;
-  background: linear-gradient(135deg, #f5f0e1, #e8dcc8);
-  border: 1px solid #b8a88a;
-  border-radius: 4px;
+  background: linear-gradient(160deg, #faf6ed 0%, #f0e8d4 30%, #e8dcc8 100%);
+  border: 1.5px solid #c4b598;
+  border-radius: 5px;
   margin: 1px;
   cursor: pointer;
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  box-shadow: 1px 2px 3px rgba(0,0,0,0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    inset 0 -1px 0 rgba(0,0,0,0.05),
+    1px 2px 4px rgba(0,0,0,0.25),
+    0 1px 2px rgba(0,0,0,0.15);
   transition: transform 0.15s, box-shadow 0.15s;
   user-select: none;
   position: relative;
+  overflow: hidden;
 }
 
 .tile:hover {
-  transform: translateY(-6px);
-  box-shadow: 1px 4px 8px rgba(0,0,0,0.4);
+  transform: translateY(-8px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    2px 6px 12px rgba(0,0,0,0.35);
 }
 
 .tile.selected {
-  transform: translateY(-10px);
-  box-shadow: 0 0 10px #ffd700;
+  transform: translateY(-12px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    0 0 12px #ffd700, 0 0 24px rgba(255,215,0,0.3);
   border-color: #ffd700;
 }
 
-.tile.wan { color: #333; }
-.tile.tiao { color: #228b22; }
-.tile.tong { color: #1e90ff; }
-.tile.feng { color: #333; }
-
-.tile.feng-zhong { color: #cc0000; }
-.tile.feng-fa { color: #228b22; }
-.tile.feng-bai {
-  color: #666;
-  background: linear-gradient(135deg, #f5f5f5, #ddd);
+/* 牌面容器 */
+.tile-face {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
+.tile-symbol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+/* ==================== 万子 ==================== */
+.wan-symbol {
+  gap: 0;
+}
+
+.tile-number {
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+
+.tile-wan-char {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  margin-top: -1px;
+}
+
+/* ==================== 条子 ==================== */
+.tiao-symbol {
+  gap: 0;
+}
+
+.bamboo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1px;
+  max-width: 32px;
+  max-height: 42px;
+}
+
+.bamboo-stick {
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+}
+
+/* ==================== 筒子 ==================== */
+.tong-symbol {
+  gap: 0;
+}
+
+.tong-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1px;
+  max-width: 34px;
+  max-height: 44px;
+}
+
+.tong-circle {
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+}
+
+/* ==================== 风牌 ==================== */
+.feng-symbol {
+  gap: 0;
+}
+
+.feng-char {
+  font-family: 'KaiTi', 'STKaiti', 'SimSun', serif;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.15);
+  line-height: 1;
+}
+
+.tile.feng-zhong .feng-char {
+  color: #cc0000 !important;
+  text-shadow: 0 1px 2px rgba(204,0,0,0.3);
+}
+
+.tile.feng-fa .feng-char {
+  color: #228b22 !important;
+  text-shadow: 0 1px 2px rgba(34,139,34,0.3);
+}
+
+.tile.feng-bai {
+  background: linear-gradient(160deg, #f8f8f8 0%, #eaeaea 50%, #ddd 100%);
+}
+
+/* 财神标记 */
 .tile.caishen::after {
   content: '神';
   position: absolute;
-  top: 2px;
+  top: 1px;
   right: 2px;
   font-size: 8px;
+  font-weight: 900;
   color: #cc0000;
+  text-shadow: 0 0 4px rgba(204,0,0,0.4);
+  line-height: 1;
 }
 
-/* 背面牌（其他玩家手牌） */
+/* 背面牌 */
 .tile.back {
-  background: linear-gradient(135deg, #2e7d32, #1b5e20);
-  border-color: #1b5e20;
+  background: linear-gradient(145deg, #2e7d32 0%, #1b5e20 60%, #0d3d0d 100%);
+  border-color: #0d3d0d;
   color: transparent;
   cursor: default;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.15),
+    1px 2px 4px rgba(0,0,0,0.3);
+}
+
+.tile.back::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 2px;
 }
 
 .tile.back:hover {
   transform: none;
-  box-shadow: 1px 2px 3px rgba(0,0,0,0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.15),
+    1px 2px 4px rgba(0,0,0,0.3);
 }
 
 /* 副露牌 */
 .tile.meld-tile {
-  width: 36px;
-  height: 50px;
-  font-size: 15px;
+  width: 34px;
+  height: 48px;
 }
+
+.tile.meld-tile .tile-number { font-size: 16px; }
+.tile.meld-tile .tile-wan-char { font-size: 9px; }
+.tile.meld-tile .bamboo-stick { width: 5px; height: 22px; }
+.tile.meld-tile .tong-circle { width: 12px; height: 12px; }
+.tile.meld-tile .feng-char { font-size: 20px; }
 
 /* 弃牌 */
 .tile.discard-tile {
-  width: 32px;
-  height: 44px;
-  font-size: 13px;
+  width: 30px;
+  height: 42px;
   cursor: default;
 }
+
+.tile.discard-tile .tile-number { font-size: 14px; }
+.tile.discard-tile .tile-wan-char { font-size: 8px; }
+.tile.discard-tile .bamboo-stick { width: 4px; height: 18px; }
+.tile.discard-tile .tong-circle { width: 10px; height: 10px; }
+.tile.discard-tile .feng-char { font-size: 16px; }
 
 .tile.discard-tile:hover {
   transform: none;
