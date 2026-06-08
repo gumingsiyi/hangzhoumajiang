@@ -114,98 +114,8 @@ body {
   justify-content: center;
   width: 100%;
   height: 100%;
-}
-
-.tile-symbol {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-}
-
-/* ==================== 万子 ==================== */
-.wan-symbol {
-  gap: 0;
-}
-
-.tile-number {
-  font-size: 20px;
-  font-weight: 900;
+  font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Apple Color Emoji', 'Noto Sans Symbols', sans-serif;
   line-height: 1;
-  text-shadow: 0 1px 1px rgba(0,0,0,0.1);
-}
-
-.tile-wan-char {
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1;
-  margin-top: -1px;
-}
-
-/* ==================== 条子 ==================== */
-.tiao-symbol {
-  gap: 0;
-}
-
-.bamboo-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 1px;
-  max-width: 32px;
-  max-height: 42px;
-}
-
-.bamboo-stick {
-  flex-shrink: 0;
-  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
-}
-
-/* ==================== 筒子 ==================== */
-.tong-symbol {
-  gap: 0;
-}
-
-.tong-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 1px;
-  max-width: 34px;
-  max-height: 44px;
-}
-
-.tong-circle {
-  flex-shrink: 0;
-  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
-}
-
-/* ==================== 风牌 ==================== */
-.feng-symbol {
-  gap: 0;
-}
-
-.feng-char {
-  font-family: 'KaiTi', 'STKaiti', 'SimSun', serif;
-  text-shadow: 0 1px 1px rgba(0,0,0,0.15);
-  line-height: 1;
-}
-
-.tile.feng-zhong .feng-char {
-  color: #cc0000 !important;
-  text-shadow: 0 1px 2px rgba(204,0,0,0.3);
-}
-
-.tile.feng-fa .feng-char {
-  color: #228b22 !important;
-  text-shadow: 0 1px 2px rgba(34,139,34,0.3);
-}
-
-.tile.feng-bai {
-  background: linear-gradient(160deg, #f8f8f8 0%, #eaeaea 50%, #ddd 100%);
 }
 
 /* 财神标记 */
@@ -219,6 +129,7 @@ body {
   color: #cc0000;
   text-shadow: 0 0 4px rgba(204,0,0,0.4);
   line-height: 1;
+  font-family: sans-serif;
 }
 
 /* 背面牌 */
@@ -253,11 +164,7 @@ body {
   height: 48px;
 }
 
-.tile.meld-tile .tile-number { font-size: 16px; }
-.tile.meld-tile .tile-wan-char { font-size: 9px; }
-.tile.meld-tile .bamboo-stick { width: 5px; height: 22px; }
-.tile.meld-tile .tong-circle { width: 12px; height: 12px; }
-.tile.meld-tile .feng-char { font-size: 20px; }
+.tile.meld-tile .tile-face { font-size: 28px; }
 
 /* 弃牌 */
 .tile.discard-tile {
@@ -266,11 +173,7 @@ body {
   cursor: default;
 }
 
-.tile.discard-tile .tile-number { font-size: 14px; }
-.tile.discard-tile .tile-wan-char { font-size: 8px; }
-.tile.discard-tile .bamboo-stick { width: 4px; height: 18px; }
-.tile.discard-tile .tong-circle { width: 10px; height: 10px; }
-.tile.discard-tile .feng-char { font-size: 16px; }
+.tile.discard-tile .tile-face { font-size: 24px; }
 
 .tile.discard-tile:hover {
   transform: none;
