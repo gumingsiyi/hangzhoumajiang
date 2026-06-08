@@ -13,9 +13,6 @@ import { isCaishen } from '../constants';
  * 白:   🀆                  (U+1F006)
  */
 
-// 使用 ︎ 文本变体选择器，确保显示为文本样式而非 emoji
-const T = '︎';
-
 const WAN_CHARS  = ['\u{1F007}', '\u{1F008}', '\u{1F009}', '\u{1F00A}', '\u{1F00B}', '\u{1F00C}', '\u{1F00D}', '\u{1F00E}', '\u{1F00F}'];
 const TIAO_CHARS = ['\u{1F010}', '\u{1F011}', '\u{1F012}', '\u{1F013}', '\u{1F014}', '\u{1F015}', '\u{1F016}', '\u{1F017}', '\u{1F018}'];
 const TONG_CHARS = ['\u{1F019}', '\u{1F01A}', '\u{1F01B}', '\u{1F01C}', '\u{1F01D}', '\u{1F01E}', '\u{1F01F}', '\u{1F020}', '\u{1F021}'];
@@ -60,7 +57,7 @@ export function createTileElement(
   const char = getTileChar(tile);
   const face = document.createElement('div');
   face.className = 'tile-face';
-  face.textContent = char + T;
+  face.textContent = char;
   el.appendChild(face);
 
   // 风牌特殊颜色
