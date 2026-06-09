@@ -195,7 +195,7 @@ body {
 
 .tile.meld-tile img { }
 
-/* 弃牌（缩小到 0.75，去掉 margin，由 gap 控制间距） */
+/* 弃牌 */
 .tile.discard-tile {
   width: 30px;
   height: 42px;
@@ -241,21 +241,20 @@ body {
 .discard-area {
   display: flex;
   flex-wrap: wrap;
-  flex-direction: row-reverse;
   align-content: flex-start;
   justify-content: flex-start;
   gap: 1px;
   padding: 4px;
   border-radius: 4px;
   width: 162px;
-  height: 179px;
+  height: 162px;
 }
 
 /* 牌桌中央弃牌区容器 — 3×3 布局，弃牌在四条边上 */
 .center-discard {
   display: grid;
   grid-template-columns: 162px 162px 162px;
-  grid-template-rows: 179px 179px 179px;
+  grid-template-rows: 162px 162px 162px;
   gap: 4px;
   padding: 6px;
   background: rgba(0,0,0,0.15);
