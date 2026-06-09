@@ -103,8 +103,9 @@ export function renderGameOver(
     for (const meld of result.winnerMelds) {
       const meldGroup = document.createElement('div');
       meldGroup.className = 'meld-group';
-      for (const tile of meld.tiles) {
-        meldGroup.appendChild(createTileElement(tile, { isMeld: true }));
+      for (let i = 0; i < meld.tiles.length; i++) {
+        const isBorrowed = meld.borrowedIndex === i;
+        meldGroup.appendChild(createTileElement(meld.tiles[i], { isMeld: true, isBorrowed }));
       }
       meldsSection.appendChild(meldGroup);
     }

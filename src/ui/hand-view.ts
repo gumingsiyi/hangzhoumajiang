@@ -24,8 +24,9 @@ export function renderHand(
     for (const meld of player.melds) {
       const group = document.createElement('div');
       group.className = 'meld-group';
-      for (const tile of meld.tiles) {
-        group.appendChild(createTileElement(tile, { isMeld: true }));
+      for (let i = 0; i < meld.tiles.length; i++) {
+        const isBorrowed = meld.borrowedIndex === i;
+        group.appendChild(createTileElement(meld.tiles[i], { isMeld: true, isBorrowed }));
       }
       meldsArea.appendChild(group);
     }

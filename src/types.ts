@@ -21,6 +21,7 @@ export type MeldType = 'chi' | 'peng' | 'gang' | 'angang';
 export interface Meld {
   type: MeldType;
   tiles: Tile[];
+  borrowedIndex?: number;  // 从别家吃/碰/杠来的牌在 tiles 中的索引，渲染时旋转显示
 }
 
 /** 玩家状态 */

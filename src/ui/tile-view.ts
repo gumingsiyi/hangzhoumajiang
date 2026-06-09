@@ -55,6 +55,7 @@ export function createTileElement(
     selected?: boolean;
     newlyDrawn?: boolean;
     isWinningTile?: boolean;
+    isBorrowed?: boolean;
     onClick?: (tile: Tile) => void;
   } = {}
 ): HTMLElement {
@@ -93,6 +94,7 @@ export function createTileElement(
   if (options.selected) el.classList.add('selected');
   if (options.newlyDrawn) el.classList.add('newly-drawn');
   if (options.isWinningTile) el.classList.add('winning-tile');
+  if (options.isBorrowed) el.classList.add('borrowed');
   if (options.clickable) el.style.cursor = 'pointer';
 
   if (options.onClick) {

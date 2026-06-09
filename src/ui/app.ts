@@ -301,8 +301,9 @@ export class App {
       for (const meld of myPlayer.melds) {
         const group = document.createElement('div');
         group.className = 'meld-group';
-        for (const tile of meld.tiles) {
-          group.appendChild(createTileElement(tile, { isMeld: true }));
+        for (let i = 0; i < meld.tiles.length; i++) {
+          const isBorrowed = meld.borrowedIndex === i;
+          group.appendChild(createTileElement(meld.tiles[i], { isMeld: true, isBorrowed }));
         }
         this.elPlayerMelds.appendChild(group);
       }
@@ -335,8 +336,9 @@ export class App {
         for (const meld of oppPlayer.melds) {
           const group = document.createElement('div');
           group.className = 'meld-group';
-          for (const tile of meld.tiles) {
-            group.appendChild(createTileElement(tile, { isMeld: true }));
+          for (let i = 0; i < meld.tiles.length; i++) {
+            const isBorrowed = meld.borrowedIndex === i;
+            group.appendChild(createTileElement(meld.tiles[i], { isMeld: true, isBorrowed }));
           }
           meldsEl.appendChild(group);
         }

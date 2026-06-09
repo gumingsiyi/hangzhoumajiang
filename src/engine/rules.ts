@@ -96,7 +96,7 @@ export function executePeng(hand: Tile[], melds: Meld[], discard: Tile): { hand:
     }
   }
 
-  const newMeld: Meld = { type: 'peng', tiles: [...used, discard] };
+  const newMeld: Meld = { type: 'peng', tiles: [...used, discard], borrowedIndex: 2 };
   return { hand: remaining, melds: [...melds, newMeld] };
 }
 
@@ -110,7 +110,7 @@ export function executeChi(hand: Tile[], melds: Meld[], chiTiles: Tile[], discar
     }
   }
 
-  const newMeld: Meld = { type: 'chi', tiles: [...chiTiles, discard] };
+  const newMeld: Meld = { type: 'chi', tiles: [...chiTiles, discard], borrowedIndex: 2 };
   return { hand: remaining, melds: [...melds, newMeld] };
 }
 
