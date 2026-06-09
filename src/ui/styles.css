@@ -195,11 +195,14 @@ body {
 
 .tile.meld-tile img { }
 
-/* 从别家吃/碰/杠来的牌 — 整张牌横放 */
+/* 从别家吃/碰/杠来的牌 — 整张牌横放，贴底 */
 .tile.borrowed {
+  width: 48px;
+  height: 34px;
+  align-self: flex-end;
+}
+.tile.borrowed img {
   transform: rotate(90deg);
-  margin-left: 7px;
-  margin-right: 7px;
 }
 
 /* 弃牌（手牌 0.9 倍） */
