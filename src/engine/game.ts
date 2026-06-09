@@ -265,6 +265,10 @@ export class Game {
     this.hands[playerIndex] = new Hand(hand);
     this.state.players[playerIndex].hand = hand;
     this.state.players[playerIndex].melds = melds;
+
+    // 从弃牌堆移除被碰的牌
+    const discards = this.state.players[this.state.lastDiscardPlayer].discards;
+    discards.pop();
     this.state.lastDiscard = null;
 
     this.callbacks.onMessage(`玩家${playerIndex}碰 ${tileToString(discard)}`);
@@ -291,9 +295,11 @@ export class Game {
     this.hands[playerIndex] = new Hand(hand);
     this.state.players[playerIndex].hand = hand;
     this.state.players[playerIndex].melds = melds;
-    this.state.lastDiscard = null;
 
-    this.callbacks.onMessage(`玩家${playerIndex}吃 ${tileToString(discard)}`);
+    // 从弃牌堆移除被吃的牌
+    const chiDiscards = this.state.players[this.state.lastDiscardPlayer].discards;
+    chiDiscards.pop();
+    this.state.lastDiscard = null;
     this.callbacks.onStateChange(this.state);
 
     // 吃完后出牌
@@ -316,6 +322,13 @@ export class Game {
     this.hands[playerIndex] = new Hand(hand);
     this.state.players[playerIndex].hand = hand;
     this.state.players[playerIndex].melds = melds;
+
+    // 明杠：从弃牌堆移除被杠的牌（暗杠不涉及弃牌）
+    if (action.fromPlayer !== undefined) {
+      const gangDiscards = this.state.players[this.state.lastDiscardPlayer].discards;
+      gangDiscards.pop();
+      this.state.lastDiscard = null;
+    }
 
     this.callbacks.onMessage(`玩家${playerIndex}杠`);
     this.callbacks.onStateChange(this.state);

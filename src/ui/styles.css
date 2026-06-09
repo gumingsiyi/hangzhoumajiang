@@ -45,6 +45,14 @@ body {
   transform: translateX(-50%);
 }
 
+.player-area.top .hand-tiles {
+  gap: 0;
+}
+
+.player-area.top .hand-tiles .tile {
+  margin: 0;
+}
+
 .player-area.left {
   left: 10px;
   top: 50%;
@@ -131,20 +139,15 @@ body {
   user-select: none;
 }
 
-/* 新摸到的牌（3秒后自动消失） */
+/* 新摸到的牌 — 比手牌略高，出牌后回位 */
 .tile.newly-drawn {
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.6),
-    0 0 8px #00e5ff, 0 0 16px rgba(0,229,255,0.4);
-  border-color: #00e5ff;
-  animation: glow-fade 2.5s ease-out forwards;
+  transform: translateY(-12px);
 }
 
-@keyframes glow-fade {
-  0%   { box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 0 12px #00e5ff, 0 0 24px rgba(0,229,255,0.6); border-color: #00e5ff; }
-  60%  { box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 0 6px rgba(0,229,255,0.3), 0 0 12px rgba(0,229,255,0.2); border-color: rgba(0,229,255,0.5); }
-  100% { box-shadow: none; border-color: #c4b598; }
+.tile.newly-drawn:hover {
+  transform: translateY(-20px);
 }
+
 
 /* 财神标记 */
 .tile.caishen::after {
@@ -190,6 +193,16 @@ body {
 .tile.meld-tile {
   width: 34px;
   height: 48px;
+  cursor: default;
+}
+
+.tile.meld-tile:hover {
+  transform: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    inset 0 -1px 0 rgba(0,0,0,0.05),
+    1px 2px 4px rgba(0,0,0,0.25),
+    0 1px 2px rgba(0,0,0,0.15);
 }
 
 .tile.meld-tile img { }
@@ -277,14 +290,50 @@ body {
   grid-template-rows: 192px 192px 192px;
   gap: 4px;
   padding: 6px;
-  background: rgba(0,0,0,0.15);
   border-radius: 8px;
 }
 
-/* 中央空隙 */
-.center-gap {
+/* 中央信息面板 — 弃牌区正中间 */
+.center-gap,
+.center-info {
   grid-column: 2;
   grid-row: 2;
+}
+
+.center-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  gap: 4px;
+  min-width: 120px;
+}
+
+.center-info .caishen {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.center-info .wall-count {
+  opacity: 0.8;
+}
+
+.center-info .dice-info {
+  padding: 4px 8px;
+  background: rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 4px;
+  font-size: 13px;
+  color: #ffd700;
+  text-align: center;
+}
+
+.center-info .dice-icon {
+  font-size: 16px;
 }
 
 /* 对家弃牌（顶边中央，旋转朝上） */
@@ -412,42 +461,7 @@ body {
   color: #fff;
 }
 
-/* ==================== 信息面板 ==================== */
-.info-panel {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  background: rgba(0,0,0,0.6);
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 14px;
-  min-width: 150px;
-}
-
-.info-panel .caishen {
-  color: #ffd700;
-  font-weight: bold;
-}
-
-.info-panel .wall-count {
-  margin-top: 6px;
-  opacity: 0.8;
-}
-
-.info-panel .dice-info {
-  margin-top: 8px;
-  padding: 6px 10px;
-  background: rgba(255, 215, 0, 0.15);
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  border-radius: 6px;
-  font-size: 14px;
-  color: #ffd700;
-  text-align: center;
-}
-
-.info-panel .dice-icon {
-  font-size: 18px;
-}
+/* ==================== 信息面板（已移至弃牌区中央 .center-info） ==================== */
 
 /* ==================== 游戏结束遮罩 ==================== */
 .game-over-overlay {
@@ -526,38 +540,18 @@ body {
   font-weight: bold;
 }
 
-/* 手牌区域 */
-.winner-hand-section {
+/* 手牌+副露横向排列 */
+.winner-hand-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
   margin: 8px 0;
-}
-
-.winner-hand-label {
-  font-size: 14px;
-  color: #ccc;
-  margin-bottom: 6px;
-  text-align: center;
 }
 
 .winner-hand-tiles {
   display: flex;
   gap: 2px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-/* 副露区域 */
-.winner-melds-section {
-  margin: 8px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.winner-melds-label {
-  font-size: 14px;
-  color: #ccc;
-  margin-bottom: 4px;
 }
 
 /* ==================== 日志 ==================== */

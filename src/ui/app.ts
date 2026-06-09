@@ -108,10 +108,10 @@ export class App {
     centerDiscard.style.transform = 'translate(-50%, -50%)';
     table.appendChild(centerDiscard);
 
-    // 中央空隙
-    const centerGap = document.createElement('div');
-    centerGap.className = 'center-gap';
-    centerDiscard.appendChild(centerGap);
+    // 中央空隙 — 信息面板放这里
+    this.elInfoPanel = document.createElement('div');
+    this.elInfoPanel.className = 'center-info';
+    centerDiscard.appendChild(this.elInfoPanel);
 
     // 布局：top 在上，left 在左，right 在右，bottom 在下
     const discardPositions = ['discard-top', 'discard-left', 'discard-right', 'discard-bottom'];
@@ -128,11 +128,6 @@ export class App {
     this.elActionBar = document.createElement('div');
     this.elActionBar.className = 'action-bar';
     app.appendChild(this.elActionBar);
-
-    // 信息面板
-    this.elInfoPanel = document.createElement('div');
-    this.elInfoPanel.className = 'info-panel';
-    app.appendChild(this.elInfoPanel);
 
     // 消息日志
     this.elMessageLog = document.createElement('div');
@@ -203,7 +198,6 @@ export class App {
       case 'state_update': {
         const prevIds = this.lastHandTileIds;
         const newHand = msg.state.myHand ?? [];
-        this.newlyDrawnTileId = null;
         if (prevIds.size > 0) {
           for (const t of newHand) {
             if (!prevIds.has(t.id)) {
@@ -274,6 +268,7 @@ export class App {
     if (this.selectedTileId === tile.id) {
       // 双击出牌
       this.selectedTileId = null;
+      this.newlyDrawnTileId = null;
       this.send({ type: 'action', action: { type: 'discard', tiles: [tile] } });
     } else {
       this.selectedTileId = tile.id;
@@ -331,8 +326,10 @@ export class App {
       const oppPlayer = state.players[playerIdx];
       if (oppPlayer) {
         for (let j = 0; j < oppPlayer.handCount; j++) {
-          const t = document.createElement('div');
-          t.className = 'tile back';
+          const t = createTileElement(
+            { suit: 'wan', rank: 1, id: -j - 1 },
+            { faceDown: true }
+          );
           el.appendChild(t);
         }
       }

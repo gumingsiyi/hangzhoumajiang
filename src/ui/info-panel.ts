@@ -82,43 +82,35 @@ export function renderGameOver(
     content.appendChild(winTileSection);
   }
 
-  // 手牌
-  if (result.winnerHand && result.winnerHand.length > 0) {
-    const handSection = document.createElement('div');
-    handSection.className = 'winner-hand-section';
-    const handLabel = document.createElement('p');
-    handLabel.textContent = '手牌';
-    handLabel.className = 'winner-hand-label';
-    handSection.appendChild(handLabel);
+  // 手牌 + 副露横向排列
+  if ((result.winnerHand && result.winnerHand.length > 0) || (result.winnerMelds && result.winnerMelds.length > 0)) {
+    const row = document.createElement('div');
+    row.className = 'winner-hand-row';
 
+    // 手牌
     const handContainer = document.createElement('div');
     handContainer.className = 'winner-hand-tiles';
-    for (const tile of result.winnerHand) {
-      handContainer.appendChild(createTileElement(tile, {}));
-    }
-    handSection.appendChild(handContainer);
-    content.appendChild(handSection);
-  }
-
-  // 副露
-  if (result.winnerMelds && result.winnerMelds.length > 0) {
-    const meldsSection = document.createElement('div');
-    meldsSection.className = 'winner-melds-section';
-    const meldsLabel = document.createElement('p');
-    meldsLabel.textContent = '副露';
-    meldsLabel.className = 'winner-melds-label';
-    meldsSection.appendChild(meldsLabel);
-
-    for (const meld of result.winnerMelds) {
-      const meldGroup = document.createElement('div');
-      meldGroup.className = 'meld-group';
-      for (let i = 0; i < meld.tiles.length; i++) {
-        const isBorrowed = meld.borrowedIndex === i;
-        meldGroup.appendChild(createTileElement(meld.tiles[i], { isMeld: true, isBorrowed }));
+    if (result.winnerHand) {
+      for (const tile of result.winnerHand) {
+        handContainer.appendChild(createTileElement(tile, {}));
       }
-      meldsSection.appendChild(meldGroup);
     }
-    content.appendChild(meldsSection);
+    row.appendChild(handContainer);
+
+    // 副露
+    if (result.winnerMelds) {
+      for (const meld of result.winnerMelds) {
+        const meldGroup = document.createElement('div');
+        meldGroup.className = 'meld-group';
+        for (let i = 0; i < meld.tiles.length; i++) {
+          const isBorrowed = meld.borrowedIndex === i;
+          meldGroup.appendChild(createTileElement(meld.tiles[i], { isMeld: true, isBorrowed }));
+        }
+        row.appendChild(meldGroup);
+      }
+    }
+
+    content.appendChild(row);
   }
 
   const restartBtn = document.createElement('button');
