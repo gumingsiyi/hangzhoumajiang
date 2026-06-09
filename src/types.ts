@@ -42,6 +42,14 @@ export interface Action {
   fromPlayer?: number;  // 来源玩家
 }
 
+/** 骰子结果 */
+export interface DiceResult {
+  dice1: number;   // 第一颗骰子 1-6
+  dice2: number;   // 第二颗骰子 1-6
+  total: number;   // 总和 2-12
+  wallOwner: number; // 从哪个座位的牌墙开始抓牌 0-3
+}
+
 /** 游戏阶段 */
 export type GamePhase = 'idle' | 'dealing' | 'playing' | 'finished';
 
@@ -57,6 +65,7 @@ export interface GameState {
   phase: GamePhase;
   pendingActions: Action[]; // 当前可执行的动作
   turnCount: number;
+  diceResult: DiceResult | null;  // 骰子结果（开局后设置）
 }
 
 /** 番型 */

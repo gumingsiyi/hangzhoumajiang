@@ -388,6 +388,21 @@ body {
   opacity: 0.8;
 }
 
+.info-panel .dice-info {
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 6px;
+  font-size: 14px;
+  color: #ffd700;
+  text-align: center;
+}
+
+.info-panel .dice-icon {
+  font-size: 18px;
+}
+
 /* ==================== 游戏结束遮罩 ==================== */
 .game-over-overlay {
   position: fixed;

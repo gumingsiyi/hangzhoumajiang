@@ -234,6 +234,7 @@ export class GameRoom {
       lastDiscardPlayer: state.lastDiscardPlayer,
       phase: state.phase,
       turnCount: state.turnCount,
+      diceResult: state.diceResult,
       myHand: state.players[forSeat]?.hand ?? [],
     };
   }

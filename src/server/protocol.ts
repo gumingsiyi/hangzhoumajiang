@@ -4,7 +4,7 @@
  * 客户端和服务器之间通过 JSON 消息通信
  */
 
-import type { Action, GameState, HuResult, Tile, Meld, GamePhase } from '../types';
+import type { Action, GameState, HuResult, Tile, Meld, GamePhase, DiceResult } from '../types';
 
 // ==================== 座位类型 ====================
 
@@ -30,6 +30,8 @@ export interface SanitizedGameState {
   lastDiscardPlayer: number;
   phase: GamePhase;
   turnCount: number;
+  // 骰子结果
+  diceResult: DiceResult | null;
   // 当前玩家自己的完整手牌（只有自己能看到）
   myHand: Tile[];
 }

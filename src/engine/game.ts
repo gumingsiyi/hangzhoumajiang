@@ -1,6 +1,6 @@
 import { GameState, PlayerState, Tile, Meld, Action, GameCallbacks, GamePhase } from '../types';
 import { isCaishen, sortTiles, tileToString } from '../constants';
-import { createDeck, drawTile, dealTiles } from './deck';
+import { createDeck, drawTile, dealTiles, rollDice, getWallStartIndex } from './deck';
 import { Hand } from './hand';
 import { canHu, calculateFan } from './pattern';
 import { getAvailableActions, getDrawActions, executePeng, executeChi, executeGang } from './rules';
@@ -33,6 +33,7 @@ export class Game {
       phase: 'idle',
       pendingActions: [],
       turnCount: 0,
+      diceResult: null,
     };
   }
 
@@ -41,12 +42,17 @@ export class Game {
     const wall = createDeck();
     const caishen = wall.find(t => isCaishen(t)) || { suit: 'feng' as const, rank: 7 as const, id: -1 };
 
-    // 发牌：每人 13 张，庄家 14 张
-    const { hands, remaining } = dealTiles(wall, 4, 13);
+    // 掷骰子
+    const diceResult = rollDice();
+    const startIndex = getWallStartIndex(diceResult);
 
-    // 庄家（玩家0）多摸一张
+    // 发牌：每人 13 张，起手玩家 14 张，从骰子决定的位置开始
+    const starter = diceResult.wallOwner;
+    const { hands, remaining } = dealTiles(wall, 4, 13, startIndex);
+
+    // 起手玩家多摸一张
     const dealerDraw = remaining[0];
-    hands[0].push(dealerDraw);
+    hands[starter].push(dealerDraw);
     const wallAfterDealer = remaining.slice(1);
 
     // 初始化玩家状态
@@ -54,7 +60,7 @@ export class Game {
       hand: sortTiles(hand),
       melds: [],
       discards: [],
-      isDealer: i === 0,
+      isDealer: i === starter,
     }));
 
     this.hands = hands.map(h => new Hand(h));
@@ -63,20 +69,24 @@ export class Game {
       players,
       wall: wallAfterDealer,
       caishen,
-      currentPlayer: 0,
+      currentPlayer: starter,
       lastDiscard: null,
       lastDiscardPlayer: -1,
       lastDrawnTile: null,
       phase: 'playing',
       pendingActions: [],
       turnCount: 0,
+      diceResult,
     };
 
-    this.callbacks.onMessage(`新一局开始！财神：${tileToString(caishen)}`);
+    this.callbacks.onMessage(
+      `庄家掷出 ${diceResult.dice1} 和 ${diceResult.dice2}（共 ${diceResult.total} 点），` +
+      `从玩家${starter} 门前抓牌，玩家${starter} 先出牌`
+    );
     this.callbacks.onStateChange(this.state);
 
-    // 庄家先出牌
-    this.callbacks.onActionRequired(0, [{ type: 'discard' }]);
+    // 起手玩家先出牌
+    this.callbacks.onActionRequired(starter, [{ type: 'discard' }]);
   }
 
   // 玩家执行动作

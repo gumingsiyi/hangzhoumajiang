@@ -1,6 +1,6 @@
-import { Tile, GameState, HuResult } from '../types';
+import { Tile, GameState, HuResult, DiceResult } from '../types';
 import type { SanitizedGameState } from '../server/protocol';
-import { tileToString } from '../constants';
+import { tileToString, FAN_NAMES } from '../constants';
 import { createTileElement } from './tile-view';
 
 /**
@@ -15,6 +15,15 @@ export function renderInfoPanel(
   const caishenEl = document.createElement('div');
   caishenEl.innerHTML = `<span class="caishen">财神：${tileToString(state.caishen)}</span>`;
   container.appendChild(caishenEl);
+
+  // 骰子信息
+  if (state.diceResult) {
+    const diceEl = document.createElement('div');
+    diceEl.className = 'dice-info';
+    const d = state.diceResult;
+    diceEl.innerHTML = `<span class="dice-icon">🎲</span> ${d.dice1} + ${d.dice2} = <strong>${d.total}</strong> 点`;
+    container.appendChild(diceEl);
+  }
 
   const wallCount = 'wall' in state ? state.wall.length : state.wallCount;
   const wallEl = document.createElement('div');
@@ -58,7 +67,7 @@ export function renderGameOver(
   content.appendChild(fanInfo);
 
   const fanTypes = document.createElement('p');
-  fanTypes.textContent = result.fanTypes.join('、');
+  fanTypes.textContent = result.fanTypes.map(f => FAN_NAMES[f] || f).join('、');
   content.appendChild(fanTypes);
 
   // 摸到的牌（自摸牌或点炮牌）

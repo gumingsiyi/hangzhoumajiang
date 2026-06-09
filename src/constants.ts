@@ -1,4 +1,4 @@
-import { Suit, Tile, Rank, FengRank } from './types';
+import { Suit, Tile, Rank, FengRank, FanType } from './types';
 
 export const SUITS: Suit[] = ['wan', 'tiao', 'tong'];
 export const RANKS: Rank[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -12,6 +12,19 @@ export const FENG_NAMES: Record<FengRank, string> = {
 // 花色中文名
 export const SUIT_NAMES: Record<Suit, string> = {
   wan: '万', tiao: '条', tong: '筒', feng: '风',
+};
+
+// 番型中文名
+export const FAN_NAMES: Record<FanType, string> = {
+  pingHu: '平胡',
+  pengPengHu: '碰碰胡',
+  qingYiSe: '清一色',
+  qiDui: '七对',
+  caiShenTou: '财神头',
+  gangShangHua: '杠上花',
+  gangShangPao: '杠上炮',
+  qiangGangHu: '抢杠胡',
+  ziMo: '自摸',
 };
 
 // 每种牌 4 张
