@@ -109,6 +109,34 @@ function isStandardHu(handTiles: Tile[]): boolean {
   return false;
 }
 
+// 尝试从 startRank 开始的顺子 (startRank, startRank+1, startRank+2)
+// 用财神补齐缺失的牌，返回成功时的剩余牌和剩余财神数
+function tryShunzi(
+  counts: TileCount[],
+  suit: Suit,
+  startRank: number,
+  caishenCount: number,
+): { next: TileCount[]; caishenLeft: number } | null {
+  if (startRank < 1 || startRank > 7) return null;
+  if (suit === 'feng') return null;
+
+  const ranks = [startRank, startRank + 1, startRank + 2];
+  const next = counts.map(cc => ({ ...cc }));
+  let caishenUsed = 0;
+
+  for (const r of ranks) {
+    const idx = next.findIndex(cc => cc.suit === suit && cc.rank === r);
+    if (idx !== -1 && next[idx].count > 0) {
+      next[idx].count--;
+    } else {
+      caishenUsed++;
+    }
+  }
+
+  if (caishenUsed > caishenCount) return null;
+  return { next, caishenLeft: caishenCount - caishenUsed };
+}
+
 // 检测剩余的牌能否全部组成面子（刻子或顺子）
 function canFormMentsu(counts: TileCount[], caishenCount: number): boolean {
   // 找到第一个有牌的位置
@@ -142,54 +170,17 @@ function canFormMentsu(counts: TileCount[], caishenCount: number): boolean {
   }
 
   // 尝试顺子（只有数牌可以，风牌不行）
+  // 当前牌可以作为顺子的起点、中间或终点
   if (c.suit !== 'feng') {
-    const rank = c.rank;
-    if (rank <= 7) {
-      // 找 rank, rank+1, rank+2
-      const idx2 = counts.findIndex(cc => cc.suit === c.suit && cc.rank === rank + 1);
-      const idx3 = counts.findIndex(cc => cc.suit === c.suit && cc.rank === rank + 2);
+    const rank = c.rank as number;
+    const startPositions = [rank, rank - 1, rank - 2];
 
-      const has2 = idx2 !== -1 && counts[idx2].count > 0;
-      const has3 = idx3 !== -1 && counts[idx3].count > 0;
-
-      if (has2 && has3) {
-        // 三张都有
-        const next = counts.map(cc => ({ ...cc }));
-        next[first].count--;
-        next[idx2].count--;
-        next[idx3].count--;
-        if (canFormMentsu(next, caishenCount)) return true;
-      }
-
-      // 缺一张，用财神补
-      if (caishenCount >= 1) {
-        if (has2 && !has3) {
-          const next = counts.map(cc => ({ ...cc }));
-          next[first].count--;
-          next[idx2].count--;
-          if (canFormMentsu(next, caishenCount - 1)) return true;
-        }
-        if (!has2 && has3) {
-          const next = counts.map(cc => ({ ...cc }));
-          next[first].count--;
-          next[idx3].count--;
-          if (canFormMentsu(next, caishenCount - 1)) return true;
-        }
-        if (!has2 && !has3 && caishenCount >= 2) {
-          const next = counts.map(cc => ({ ...cc }));
-          next[first].count--;
-          if (canFormMentsu(next, caishenCount - 2)) return true;
-        }
+    for (const startRank of startPositions) {
+      const result = tryShunzi(counts, c.suit, startRank, caishenCount);
+      if (result) {
+        if (canFormMentsu(result.next, result.caishenLeft)) return true;
       }
     }
-  }
-
-  // 全用财神替代当前牌做面子
-  if (caishenCount >= 3) {
-    const next = counts.map(cc => ({ ...cc }));
-    next[first].count -= 0; // 不减，全靠财神
-    // 实际上不能这样——财神不能凭空做面子，需要至少一张实体牌
-    // 这里跳过
   }
 
   return false;

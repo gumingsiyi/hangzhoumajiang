@@ -170,6 +170,7 @@ export class Game {
     const nextPlayer = (fromPlayer + 1) % 4;
     this.state.currentPlayer = nextPlayer;
     this.state.lastDiscard = null;
+    this.state.lastDiscardPlayer = -1;
     this.state.turnCount++;
 
     // 摸牌
@@ -208,7 +209,7 @@ export class Game {
   // 胡牌
   private handleHu(playerIndex: number): void {
     const player = this.state.players[playerIndex];
-    const isZiMo = this.state.lastDiscardPlayer !== playerIndex;
+    const isZiMo = this.state.lastDiscardPlayer === -1;
     const result = calculateFan(player.hand, player.melds, isZiMo);
 
     this.state.phase = 'finished';
@@ -292,6 +293,7 @@ export class Game {
       this.hands[playerIndex].add(tile);
       this.state.players[playerIndex].hand = [...this.hands[playerIndex].tiles];
       this.state.currentPlayer = playerIndex;
+      this.state.lastDiscardPlayer = -1; // 杠后摸牌，重置为自摸状态
 
       // 检查杠上花
       const drawActions = getDrawActions(this.state, playerIndex);

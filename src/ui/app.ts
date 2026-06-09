@@ -1,6 +1,7 @@
 import type { Tile, Action, HuResult } from '../types';
 import type { SanitizedGameState, ServerMessage, SeatType } from '../server/protocol';
 import { renderHand, renderDiscards } from './hand-view';
+import { createTileElement } from './tile-view';
 import { renderActionBar } from './action-bar';
 import { renderInfoPanel, renderGameOver, addMessage } from './info-panel';
 
@@ -25,6 +26,7 @@ export class App {
   private elPlayerMelds!: HTMLElement;
   private elDiscards!: HTMLElement[];
   private elOppHands!: HTMLElement[];
+  private elOppMelds!: HTMLElement[];
   private elActionBar!: HTMLElement;
   private elInfoPanel!: HTMLElement;
   private elMessageLog!: HTMLElement;
@@ -48,6 +50,7 @@ export class App {
 
     // 对手手牌（3 个对手：上、左、右）
     this.elOppHands = [];
+    this.elOppMelds = [];
     this.elPlayerLabels = [];
     for (let i = 0; i < 3; i++) {
       const area = document.createElement('div');
@@ -57,6 +60,10 @@ export class App {
       label.textContent = `玩家${i + 1}`;
       area.appendChild(label);
       this.elPlayerLabels.push(label);
+      const meldsEl = document.createElement('div');
+      meldsEl.className = 'melds-area';
+      area.appendChild(meldsEl);
+      this.elOppMelds.push(meldsEl);
       const handEl = document.createElement('div');
       handEl.className = 'hand-tiles';
       area.appendChild(handEl);
@@ -295,10 +302,7 @@ export class App {
         const group = document.createElement('div');
         group.className = 'meld-group';
         for (const tile of meld.tiles) {
-          const el = document.createElement('div');
-          el.className = `tile meld-tile ${tile.suit}`;
-          el.textContent = this.getTileText(tile);
-          group.appendChild(el);
+          group.appendChild(createTileElement(tile, { isMeld: true }));
         }
         this.elPlayerMelds.appendChild(group);
       }
@@ -321,6 +325,20 @@ export class App {
           const t = document.createElement('div');
           t.className = 'tile back';
           el.appendChild(t);
+        }
+      }
+
+      // 对手副露（吃/碰/杠 — 所有人可见）
+      const meldsEl = this.elOppMelds[i];
+      meldsEl.innerHTML = '';
+      if (oppPlayer) {
+        for (const meld of oppPlayer.melds) {
+          const group = document.createElement('div');
+          group.className = 'meld-group';
+          for (const tile of meld.tiles) {
+            group.appendChild(createTileElement(tile, { isMeld: true }));
+          }
+          meldsEl.appendChild(group);
         }
       }
     }
@@ -379,13 +397,6 @@ export class App {
       this.selectedTileId = null;
       this.send({ type: 'restart' });
     });
-  }
-
-  private getTileText(tile: Tile): string {
-    if (tile.suit === 'feng') {
-      return ['东', '南', '西', '北', '中', '发', '白'][tile.rank - 1] || '';
-    }
-    return `${tile.rank}${'万条筒'['wan tiao tong'.split(' ').indexOf(tile.suit)]}`;
   }
 
   // 启动

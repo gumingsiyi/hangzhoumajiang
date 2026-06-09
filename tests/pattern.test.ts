@@ -118,3 +118,65 @@ describe('番型计算 calculateFan', () => {
     expect(result.fan).toBe(4); // 清一色4
   });
 });
+
+describe('顺子检测边界', () => {
+  it('财神做顺子中间牌（8-9-财神做7）', () => {
+    // 8万9万 + 财神替代7万 → 7-8-9顺子
+    const hand = [
+      tile('wan', 1, 0), tile('wan', 1, 1),
+      tile('wan', 2, 2), tile('wan', 3, 3), tile('wan', 4, 4),
+      tile('wan', 5, 5), tile('wan', 6, 6), tile('wan', 7, 7),
+      tile('wan', 8, 8), tile('wan', 8, 9), tile('wan', 8, 10),
+      tile('wan', 8, 11), tile('wan', 9, 12), caishen(13),
+    ];
+    expect(canHu(hand, [])).toBe(true);
+  });
+
+  it('财神做顺子末尾牌（1万2万+财神做3万）', () => {
+    const hand = [
+      tile('wan', 1, 0), tile('wan', 2, 1), caishen(2),
+      tile('wan', 4, 3), tile('wan', 5, 4), tile('wan', 6, 5),
+      tile('wan', 7, 6), tile('wan', 7, 7), tile('wan', 7, 8),
+      tile('wan', 9, 9), tile('wan', 9, 10), tile('wan', 9, 11),
+      tile('wan', 9, 12), tile('wan', 9, 13),
+    ];
+    // 1-2-财(3) 4-5-6 7-7-7 9-9-9 9-9 雀头
+    expect(canHu(hand, [])).toBe(true);
+  });
+
+  it('财神做顺子开头牌（财神+4万5万做3万）', () => {
+    const hand = [
+      caishen(0), tile('wan', 4, 1), tile('wan', 5, 2),
+      tile('wan', 6, 3), tile('wan', 7, 4), tile('wan', 8, 5),
+      tile('wan', 1, 6), tile('wan', 1, 7), tile('wan', 1, 8),
+      tile('wan', 9, 9), tile('wan', 9, 10), tile('wan', 9, 11),
+      tile('wan', 9, 12), tile('wan', 9, 13),
+    ];
+    // 财(3)-4-5 6-7-8 1-1-1 9-9-9 9-9 雀头
+    expect(canHu(hand, [])).toBe(true);
+  });
+
+  it('多个顺子中间都需要财神', () => {
+    // 1万2万+财(3) 4万5万+财(6) 7万7万7万 9万9万 9万9万9万
+    const hand = [
+      tile('wan', 1, 0), tile('wan', 2, 1), caishen(2),
+      tile('wan', 4, 3), tile('wan', 5, 4), caishen(5),
+      tile('wan', 7, 6), tile('wan', 7, 7), tile('wan', 7, 8),
+      tile('wan', 9, 9), tile('wan', 9, 10), tile('wan', 9, 11),
+      tile('wan', 9, 12), tile('wan', 9, 13),
+    ];
+    expect(canHu(hand, [])).toBe(true);
+  });
+
+  it('两个财神做顺子（1万+财+财做1-2-3）', () => {
+    const hand = [
+      tile('wan', 1, 0), caishen(1), caishen(2),
+      tile('wan', 5, 3), tile('wan', 6, 4), tile('wan', 7, 5),
+      tile('wan', 4, 6), tile('wan', 4, 7), tile('wan', 4, 8),
+      tile('wan', 9, 9), tile('wan', 9, 10), tile('wan', 9, 11),
+      tile('wan', 9, 12), tile('wan', 9, 13),
+    ];
+    // 1-财(2)-财(3) 5-6-7 4-4-4 9-9-9 9-9 雀头
+    expect(canHu(hand, [])).toBe(true);
+  });
+});
