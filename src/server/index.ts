@@ -11,7 +11,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { GameRoom } from './room';
 import type { ClientMessage } from './protocol';
 
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = Number(process.env.PORT) || 3001;
 
 // 房间表：roomId → GameRoom
 const rooms = new Map<string, GameRoom>();
