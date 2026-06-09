@@ -197,8 +197,6 @@ body {
 
 /* 从别家吃/碰/杠来的牌 — 整张牌横放 */
 .tile.borrowed {
-  width: 48px;
-  height: 34px;
   transform: rotate(90deg);
 }
 
