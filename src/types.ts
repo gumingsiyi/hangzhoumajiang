@@ -52,6 +52,7 @@ export interface GameState {
   currentPlayer: number;   // 0-3
   lastDiscard: Tile | null;
   lastDiscardPlayer: number;
+  lastDrawnTile: Tile | null;  // 最近摸到的牌（用于自摸时确定哪张是摸到的）
   phase: GamePhase;
   pendingActions: Action[]; // 当前可执行的动作
   turnCount: number;
@@ -74,6 +75,9 @@ export interface HuResult {
   fan: number;
   fanTypes: FanType[];
   isZiMo: boolean;
+  winnerHand?: Tile[];     // 胡牌玩家手牌（不含自摸牌）
+  winningTile?: Tile;      // 导致胡牌的那张牌（自摸牌或点炮牌）
+  winnerMelds?: Meld[];    // 胡牌玩家的副露
 }
 
 /** 座位类型 */

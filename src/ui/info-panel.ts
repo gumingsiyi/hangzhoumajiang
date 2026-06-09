@@ -1,6 +1,7 @@
 import { Tile, GameState, HuResult } from '../types';
 import type { SanitizedGameState } from '../server/protocol';
 import { tileToString } from '../constants';
+import { createTileElement } from './tile-view';
 
 /**
  * 信息面板：财神、剩余牌数
@@ -59,6 +60,56 @@ export function renderGameOver(
   const fanTypes = document.createElement('p');
   fanTypes.textContent = result.fanTypes.join('、');
   content.appendChild(fanTypes);
+
+  // 摸到的牌（自摸牌或点炮牌）
+  if (result.winningTile) {
+    const winTileSection = document.createElement('div');
+    winTileSection.className = 'winning-tile-section';
+    const winTileLabel = document.createElement('p');
+    winTileLabel.textContent = result.isZiMo ? '🀄 自摸牌' : '🎯 点炮牌';
+    winTileLabel.className = 'winning-tile-label';
+    winTileSection.appendChild(winTileLabel);
+    winTileSection.appendChild(createTileElement(result.winningTile, { isWinningTile: true }));
+    content.appendChild(winTileSection);
+  }
+
+  // 手牌
+  if (result.winnerHand && result.winnerHand.length > 0) {
+    const handSection = document.createElement('div');
+    handSection.className = 'winner-hand-section';
+    const handLabel = document.createElement('p');
+    handLabel.textContent = '手牌';
+    handLabel.className = 'winner-hand-label';
+    handSection.appendChild(handLabel);
+
+    const handContainer = document.createElement('div');
+    handContainer.className = 'winner-hand-tiles';
+    for (const tile of result.winnerHand) {
+      handContainer.appendChild(createTileElement(tile, {}));
+    }
+    handSection.appendChild(handContainer);
+    content.appendChild(handSection);
+  }
+
+  // 副露
+  if (result.winnerMelds && result.winnerMelds.length > 0) {
+    const meldsSection = document.createElement('div');
+    meldsSection.className = 'winner-melds-section';
+    const meldsLabel = document.createElement('p');
+    meldsLabel.textContent = '副露';
+    meldsLabel.className = 'winner-melds-label';
+    meldsSection.appendChild(meldsLabel);
+
+    for (const meld of result.winnerMelds) {
+      const meldGroup = document.createElement('div');
+      meldGroup.className = 'meld-group';
+      for (const tile of meld.tiles) {
+        meldGroup.appendChild(createTileElement(tile, { isMeld: true }));
+      }
+      meldsSection.appendChild(meldGroup);
+    }
+    content.appendChild(meldsSection);
+  }
 
   const restartBtn = document.createElement('button');
   restartBtn.className = 'restart-btn';

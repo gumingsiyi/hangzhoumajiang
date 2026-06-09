@@ -195,10 +195,10 @@ body {
 
 .tile.meld-tile img { }
 
-/* 弃牌 */
+/* 弃牌（手牌 0.9 倍） */
 .tile.discard-tile {
-  width: 30px;
-  height: 42px;
+  width: 36px;
+  height: 50px;
   margin: 0;
   cursor: default;
 }
@@ -246,15 +246,15 @@ body {
   gap: 1px;
   padding: 4px;
   border-radius: 4px;
-  width: 162px;
-  height: 162px;
+  width: 192px;
+  height: 192px;
 }
 
 /* 牌桌中央弃牌区容器 — 3×3 布局，弃牌在四条边上 */
 .center-discard {
   display: grid;
-  grid-template-columns: 162px 162px 162px;
-  grid-template-rows: 162px 162px 162px;
+  grid-template-columns: 192px 192px 192px;
+  grid-template-rows: 192px 192px 192px;
   gap: 4px;
   padding: 6px;
   background: rgba(0,0,0,0.15);
@@ -267,28 +267,31 @@ body {
   grid-row: 2;
 }
 
-/* 对家弃牌（顶边中央） */
+/* 对家弃牌（顶边中央，旋转朝上） */
 .discard-top {
   grid-column: 2;
   grid-row: 1;
   justify-self: center;
   align-self: center;
+  transform: rotate(180deg);
 }
 
-/* 上家弃牌（左边中央） */
+/* 上家弃牌（左边中央，旋转朝左） */
 .discard-left {
   grid-column: 1;
   grid-row: 2;
   justify-self: center;
   align-self: center;
+  transform: rotate(90deg);
 }
 
-/* 下家弃牌（右边中央） */
+/* 下家弃牌（右边中央，旋转朝右） */
 .discard-right {
   grid-column: 3;
   grid-row: 2;
   justify-self: center;
   align-self: center;
+  transform: rotate(-90deg);
 }
 
 /* 自己弃牌（底边中央） */
@@ -417,6 +420,71 @@ body {
 
 .restart-btn:hover {
   background: #ffed4a;
+}
+
+/* ==================== 胡牌牌型展示 ==================== */
+
+/* 胡牌的关键牌 — 金色脉冲发光 */
+.tile.winning-tile {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    0 0 12px #ffd700, 0 0 24px rgba(255,215,0,0.5);
+  border-color: #ffd700;
+  animation: win-glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes win-glow {
+  0%   { box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 0 8px #ffd700, 0 0 16px rgba(255,215,0,0.3); }
+  100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 0 20px #ffd700, 0 0 36px rgba(255,215,0,0.7); }
+}
+
+/* 摸牌/点炮牌区域 */
+.winning-tile-section {
+  margin: 16px 0 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.winning-tile-label {
+  font-size: 15px;
+  color: #ffd700;
+  font-weight: bold;
+}
+
+/* 手牌区域 */
+.winner-hand-section {
+  margin: 8px 0;
+}
+
+.winner-hand-label {
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.winner-hand-tiles {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* 副露区域 */
+.winner-melds-section {
+  margin: 8px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.winner-melds-label {
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 4px;
 }
 
 /* ==================== 日志 ==================== */

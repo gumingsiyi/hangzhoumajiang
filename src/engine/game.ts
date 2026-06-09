@@ -29,6 +29,7 @@ export class Game {
       currentPlayer: 0,
       lastDiscard: null,
       lastDiscardPlayer: -1,
+      lastDrawnTile: null,
       phase: 'idle',
       pendingActions: [],
       turnCount: 0,
@@ -65,6 +66,7 @@ export class Game {
       currentPlayer: 0,
       lastDiscard: null,
       lastDiscardPlayer: -1,
+      lastDrawnTile: null,
       phase: 'playing',
       pendingActions: [],
       turnCount: 0,
@@ -185,6 +187,9 @@ export class Game {
       return;
     }
 
+    // 记录摸到的牌
+    this.state.lastDrawnTile = tile;
+
     // 加入手牌
     this.hands[nextPlayer].add(tile);
     this.state.players[nextPlayer].hand = [...this.hands[nextPlayer].tiles];
@@ -211,6 +216,26 @@ export class Game {
     const player = this.state.players[playerIndex];
     const isZiMo = this.state.lastDiscardPlayer === -1;
     const result = calculateFan(player.hand, player.melds, isZiMo);
+
+    // 计算胡牌牌型：手牌和摸到的牌分开
+    let winnerHand: Tile[];
+    let winningTile: Tile;
+
+    if (isZiMo) {
+      // 自摸：摸到的牌已在手牌中，需要分离出来
+      winningTile = this.state.lastDrawnTile!;
+      winnerHand = [...player.hand];
+      const idx = winnerHand.findIndex(t => t.id === winningTile.id);
+      if (idx !== -1) winnerHand.splice(idx, 1);
+    } else {
+      // 点炮：点炮牌不在手牌中
+      winningTile = this.state.lastDiscard!;
+      winnerHand = [...player.hand];
+    }
+
+    result.winnerHand = sortTiles(winnerHand);
+    result.winningTile = winningTile;
+    result.winnerMelds = [...player.melds];
 
     this.state.phase = 'finished';
     this.callbacks.onMessage(`🎉 玩家${playerIndex}胡牌！${result.fan}番`);
@@ -290,6 +315,7 @@ export class Game {
     this.state.wall = remaining;
 
     if (tile) {
+      this.state.lastDrawnTile = tile;
       this.hands[playerIndex].add(tile);
       this.state.players[playerIndex].hand = [...this.hands[playerIndex].tiles];
       this.state.currentPlayer = playerIndex;

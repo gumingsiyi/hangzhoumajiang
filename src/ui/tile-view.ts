@@ -54,6 +54,7 @@ export function createTileElement(
     isLastDiscard?: boolean;
     selected?: boolean;
     newlyDrawn?: boolean;
+    isWinningTile?: boolean;
     onClick?: (tile: Tile) => void;
   } = {}
 ): HTMLElement {
@@ -91,6 +92,7 @@ export function createTileElement(
   if (options.isLastDiscard) el.classList.add('last-discard');
   if (options.selected) el.classList.add('selected');
   if (options.newlyDrawn) el.classList.add('newly-drawn');
+  if (options.isWinningTile) el.classList.add('winning-tile');
   if (options.clickable) el.style.cursor = 'pointer';
 
   if (options.onClick) {
