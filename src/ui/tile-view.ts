@@ -2,32 +2,47 @@ import { Tile, FengRank } from '../types';
 import { isCaishen } from '../constants';
 
 /**
- * Unicode 麻将牌字符映射
+ * 麻将牌图片路径映射
  *
- * 万子: 🀇🀈🀉🀊🀋🀌🀍🀎🀏  (U+1F007 - U+1F00F)
- * 条子: 🀐🀑🀒🀓🀔🀕🀖🀗🀘  (U+1F010 - U+1F018)
- * 筒子: 🀙🀚🀛🀜🀝🀞🀟🀠🀡  (U+1F019 - U+1F021)
- * 风牌: 🀀🀁🀂🀃            (U+1F000 - U+1F003)
- * 中:   🀄                  (U+1F004)
- * 发:   🀅                  (U+1F005)
- * 白:   🀆                  (U+1F006)
+ * 万子: m1.gif - m9.gif
+ * 条子: s1.gif - s9.gif
+ * 筒子: p1.gif - p9.gif
+ * 风牌: z1.gif(东) z2.gif(南) z3.gif(西) z4.gif(北)
+ * 白板: z5.gif
+ * 发财: z6.gif
+ * 红中: z7.gif
+ * 背面: m0.gif
  */
 
-const WAN_CHARS  = ['\u{1F007}', '\u{1F008}', '\u{1F009}', '\u{1F00A}', '\u{1F00B}', '\u{1F00C}', '\u{1F00D}', '\u{1F00E}', '\u{1F00F}'];
-const TIAO_CHARS = ['\u{1F010}', '\u{1F011}', '\u{1F012}', '\u{1F013}', '\u{1F014}', '\u{1F015}', '\u{1F016}', '\u{1F017}', '\u{1F018}'];
-const TONG_CHARS = ['\u{1F019}', '\u{1F01A}', '\u{1F01B}', '\u{1F01C}', '\u{1F01D}', '\u{1F01E}', '\u{1F01F}', '\u{1F020}', '\u{1F021}'];
-const FENG_CHARS: Record<FengRank, string> = {
-  1: '\u{1F000}', // 东
-  2: '\u{1F001}', // 南
-  3: '\u{1F002}', // 西
-  4: '\u{1F003}', // 北
-  5: '\u{1F004}', // 中
-  6: '\u{1F005}', // 发
-  7: '\u{1F006}', // 白
-};
+const IMG_BASE = 'img';
+
+function getTileImgSrc(tile: Tile): string {
+  if (tile.suit === 'wan') {
+    return `${IMG_BASE}/m${tile.rank}.gif`;
+  }
+  if (tile.suit === 'tiao') {
+    return `${IMG_BASE}/s${tile.rank}.gif`;
+  }
+  if (tile.suit === 'tong') {
+    return `${IMG_BASE}/p${tile.rank}.gif`;
+  }
+  // 风牌: code rank → image name
+  // code: 1=东 2=南 3=西 4=北 5=中 6=发 7=白
+  // img:  z1    z2    z3    z4    z7    z6    z5
+  const fengImgMap: Record<FengRank, string> = {
+    1: 'z1', // 东
+    2: 'z2', // 南
+    3: 'z3', // 西
+    4: 'z4', // 北
+    5: 'z7', // 中
+    6: 'z6', // 发
+    7: 'z5', // 白
+  };
+  return `${IMG_BASE}/${fengImgMap[tile.rank as FengRank]}.gif`;
+}
 
 /**
- * 渲染单张麻将牌 — 使用 Unicode 麻将牌字符
+ * 渲染单张麻将牌 — 使用图片
  */
 export function createTileElement(
   tile: Tile,
@@ -48,20 +63,22 @@ export function createTileElement(
 
   if (options.faceDown) {
     el.classList.add('back');
+    const img = document.createElement('img');
+    img.src = `${IMG_BASE}/pai.gif`;
+    img.draggable = false;
+    el.appendChild(img);
     return el;
   }
 
   el.classList.add(tile.suit);
   if (isCaishen(tile)) el.classList.add('caishen');
 
-  // 获取 Unicode 字符
-  const char = getTileChar(tile);
-  const face = document.createElement('div');
-  face.className = 'tile-face';
-  face.textContent = char;
-  el.appendChild(face);
+  const img = document.createElement('img');
+  img.src = getTileImgSrc(tile);
+  img.draggable = false;
+  el.appendChild(img);
 
-  // 风牌特殊颜色
+  // 风牌特殊颜色标记
   if (tile.suit === 'feng') {
     const rank = tile.rank as FengRank;
     if (rank === 5) el.classList.add('feng-zhong');
@@ -81,14 +98,4 @@ export function createTileElement(
   }
 
   return el;
-}
-
-function getTileChar(tile: Tile): string {
-  const rank = tile.rank as number;
-  switch (tile.suit) {
-    case 'wan':  return WAN_CHARS[rank - 1];
-    case 'tiao': return TIAO_CHARS[rank - 1];
-    case 'tong': return TONG_CHARS[rank - 1];
-    case 'feng': return FENG_CHARS[tile.rank as FengRank];
-  }
 }
