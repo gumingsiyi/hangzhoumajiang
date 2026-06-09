@@ -37,7 +37,6 @@ export function renderInfoPanel(
 
   const turnIndicator = document.createElement('div');
   turnIndicator.textContent = `当前：玩家${state.currentPlayer}`;
-  turnIndicator.style.marginTop = '4px';
   container.appendChild(turnIndicator);
 }
 

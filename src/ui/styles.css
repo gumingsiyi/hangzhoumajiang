@@ -28,8 +28,9 @@ body {
 /* ==================== 玩家区域 ==================== */
 .player-area {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 6px;
   position: absolute;
 }
 
@@ -37,12 +38,14 @@ body {
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
+  /* 名字在逆时针方向（左边） */
 }
 
 .player-area.top {
   top: 10px;
   left: 50%;
   transform: translateX(-50%);
+  flex-direction: row-reverse; /* 名字在逆时针方向（右边） */
 }
 
 .player-area.top .hand-tiles {
@@ -57,6 +60,7 @@ body {
   left: 10px;
   top: 50%;
   transform: translateY(-50%) rotate(90deg);
+  flex-direction: row;
 }
 
 .player-area.left .hand-tiles {
@@ -71,6 +75,7 @@ body {
   right: 10px;
   top: 50%;
   transform: translateY(-50%) rotate(-90deg);
+  flex-direction: row;
 }
 
 .player-area.right .hand-tiles {
@@ -582,8 +587,7 @@ body {
 .connection-status {
   position: fixed;
   top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 10px;
   padding: 6px 16px;
   border-radius: 20px;
   font-size: 13px;
