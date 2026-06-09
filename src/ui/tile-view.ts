@@ -56,6 +56,8 @@ export function createTileElement(
     newlyDrawn?: boolean;
     isWinningTile?: boolean;
     isBorrowed?: boolean;
+    chiTooltip?: boolean;
+    meldTooltip?: boolean;
     onClick?: (tile: Tile) => void;
   } = {}
 ): HTMLElement {
@@ -95,6 +97,8 @@ export function createTileElement(
   if (options.newlyDrawn) el.classList.add('newly-drawn');
   if (options.isWinningTile) el.classList.add('winning-tile');
   if (options.isBorrowed) el.classList.add('borrowed');
+  if (options.chiTooltip) el.classList.add('chi-tooltip-tile');
+  if (options.meldTooltip) el.classList.add('meld-tooltip-tile');
   if (options.clickable) el.style.cursor = 'pointer';
 
   if (options.onClick) {

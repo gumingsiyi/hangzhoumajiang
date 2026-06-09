@@ -227,6 +227,14 @@ body {
 }
 
 /* ==================== 手牌区域 ==================== */
+
+/* 手牌和副露横向排列 */
+.hand-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
 .hand-tiles {
   display: flex;
   gap: 2px;
@@ -359,6 +367,44 @@ body {
 .action-btn.chi {
   background: linear-gradient(135deg, #44bb44, #228822);
   color: #fff;
+}
+
+/* 吃牌按钮 wrapper — 相对定位容器 */
+.action-btn-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+/* 副露 tooltip — 显示麻将牌（吃碰杠） */
+.meld-tooltip {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+  gap: 2px;
+  z-index: 110;
+  white-space: nowrap;
+}
+
+.action-btn-wrapper:hover .meld-tooltip {
+  display: flex;
+}
+
+/* tooltip 中的牌 — 0.6 倍手牌大小 */
+.tile.meld-tooltip-tile {
+  width: 24px;
+  height: 34px;
+  cursor: default;
+  margin: 0;
+}
+
+.tile.meld-tooltip-tile:hover {
+  transform: none;
+  box-shadow: none;
 }
 
 .action-btn.pass {

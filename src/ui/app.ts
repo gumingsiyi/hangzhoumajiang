@@ -89,6 +89,13 @@ export class App {
     this.elPlayerHand.className = 'hand-tiles';
     playerArea.appendChild(this.elPlayerHand);
 
+    // 手牌+副露横向排列容器
+    const handRow = document.createElement('div');
+    handRow.className = 'hand-row';
+    playerArea.appendChild(handRow);
+    handRow.appendChild(this.elPlayerHand);
+    handRow.appendChild(this.elPlayerMelds);
+
     table.appendChild(playerArea);
 
     // 弃牌区（牌桌中央，4个区域按方位排列）
@@ -287,6 +294,7 @@ export class App {
       renderHand(this.elPlayerHand, {
         ...myPlayer,
         hand: state.myHand,
+        melds: [],  // 副露在 elPlayerMelds 中单独渲染，避免重复
       }, {
         clickable: true,
         selectedTileId: this.selectedTileId ?? undefined,
