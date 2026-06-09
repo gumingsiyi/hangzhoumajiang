@@ -242,6 +242,7 @@ body {
   background: rgba(0,0,0,0.15);
   padding: 2px;
   border-radius: 3px;
+  align-items: flex-end;
 }
 
 /* ==================== 弃牌区 ==================== */
