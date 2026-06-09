@@ -198,6 +198,8 @@ body {
 /* 从别家吃/碰/杠来的牌 — 整张牌横放 */
 .tile.borrowed {
   transform: rotate(90deg);
+  margin-left: 7px;
+  margin-right: 7px;
 }
 
 /* 弃牌（手牌 0.9 倍） */
